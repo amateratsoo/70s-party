@@ -1,101 +1,177 @@
-import Image from "next/image";
+'use client'
+
+import { type FormEvent, useState, useRef } from 'react'
+
+import { generateQrCode } from '@/utils/generate-qrcode'
+
+import { CurlyArrowSvg } from '@/components/svg/curly-arrow-svg'
+import { QrCodeSvg } from '@/components/svg/qr-code-svg'
+import Image from 'next/image'
+import { createInviteUrl } from '@/utils/create-invite-url'
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [qrcodeImage, setQrcodeImage] = useState<string | undefined>(undefined)
+  const [phoneNumberError, setPhoneNumberError] = useState(false)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const form = useRef<HTMLFormElement>(null)
+
+  async function handleForm(event: FormEvent) {
+    event.preventDefault()
+
+    const formData = new FormData(form.current as HTMLFormElement)
+
+    const sanitizedGuestPhoneNumber = (
+      formData.get('guest-phone-number') as string
+    )
+      .trim()
+      .replaceAll(' ', '')
+
+    if (isNaN(Number(sanitizedGuestPhoneNumber))) {
+      setPhoneNumberError(true)
+      ;(
+        document.querySelector(
+          "input[name='guest-phone-number']"
+        ) as HTMLInputElement
+      ).focus()
+      return
+    }
+
+    setPhoneNumberError(false)
+
+    const guestName = formData.get('guest-name')?.toString().trim()
+    const countryCode = formData.get('country-code')?.toString() || 'portugal'
+
+    let baseURL = window.location.href
+    baseURL = baseURL.slice(0, baseURL.length - 1)
+
+    const sanitizedData = new FormData()
+    sanitizedData.append('guest-name', guestName as string)
+    sanitizedData.append('guest-phone-number', sanitizedGuestPhoneNumber)
+    sanitizedData.append('country-code', countryCode)
+
+    const response = await fetch(`${baseURL}/api/create-guest`, {
+      method: 'POST',
+      body: sanitizedData
+    })
+
+    if (!response.ok) return
+
+    const data = await response.json()
+
+    const inviteURL = createInviteUrl({
+      guestNumber: sanitizedGuestPhoneNumber,
+      countryCode: countryCode
+    })
+
+    generateQrCode(inviteURL.toString()).then(image =>
+      setQrcodeImage(String(image))
+    )
+  }
+
+  return (
+    <main className='w-screen min-h-screen bg-slate-50 flex flex-col md:flex-row justify-start items-center pt-12 font-sans'>
+      <form ref={form} onSubmit={handleForm} className='w-full px-10'>
+        <div>
+          <label htmlFor='phone-number' className='text-xl font-semibold'>
+            Número de telefone{' '}
+            <span className='rounded-md ml-2 bg-slate-300 p-1 text-sm text-slate-500'>
+              Obrigatório
+            </span>
+          </label>
+
+          <div
+            data-show-error={phoneNumberError}
+            className='mt-4 rounded-md ring-0 data-[show-error="false"]:ring-slate-300 data-[show-error="true"]:ring-red-500 overflow-hidden focus-within:ring-1 flex'
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            <select
+              name='country-code'
+              defaultValue='portugal'
+              className='bg-slate-200 p-2 text-slate-500 outline-none'
+            >
+              <option value='angola'>+244 🇦🇴</option>
+              <option value='portugal'>+351 🇵🇹</option>
+            </select>
+            <input
+              type='text'
+              name='guest-phone-number'
+              id='phone-number'
+              placeholder='925 529 323'
+              required
+              className='py-2 pl-2 flex-1 bg-slate-100 outline-none'
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        <div className='mt-6 gap-4 flex flex-col'>
+          <label htmlFor='name' className='text-xl font-semibold'>
+            Nome do convidado{' '}
+            <span className='rounded-md ml-2 bg-slate-300 p-1 text-sm text-slate-500'>
+              Opcional
+            </span>
+          </label>
+          <input
+            type='text'
+            id='name'
+            name='guest-name'
+            placeholder='Pedro Duarte'
+            className='py-2 pl-2 flex-1 bg-slate-100 outline-none rounded-md ring-0 ring-slate-300 focus:ring-1'
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        </div>
+
+        <button
+          type='submit'
+          className='rounded-md bg-blue-500 w-full py-2.5 text-lg font-semibold text-blue-300 my-6 active:scale-95 transition-transform'
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+          Gerar código QR 🪄
+        </button>
+      </form>
+
+      <div className='w-full mt-6 md:mt-0'>
+        <div className='relative'>
+          <div className='absolute right-12 text-lg text-blue-500 font-semibold font-serif rotate-12 mt-7 md:mt-0 md:-top-32'>
+            {qrcodeImage ? 'Obaaa!!! 🤩🎉🎉' : 'O código QR aparecerá aqui 👀'}
+            <CurlyArrowSvg className='size-32 rotate-[125deg] fill-blue-600' />
+          </div>
+        </div>
+
+        <div className='flex m-10 h-full max-h-96 sm:mx-auto md:m-auto aspect-square items-center justify-center bg-blue-500 rounded-xl shadow-lg shadow-slate-400 mt-40 mb-10'>
+          {qrcodeImage ? (
+            <Image
+              src={qrcodeImage}
+              alt=''
+              quality={100}
+              className='size-72'
+              height={300}
+              width={300}
+              priority
+            />
+          ) : (
+            <QrCodeSvg className='size-72 fill-slate-50' />
+          )}
+        </div>
+
+        {qrcodeImage && (
+          <div className='flex flex-col px-10 gap-2 mb-10 w-full sm:w-[29rem] md:w-96 md:px-0 sm:mx-auto md:mt-10 md:mb-0'>
+            <a
+              className='rounded-md border-2 border-blue-500 w-full py-2.5 text-lg font-semibold text-blue-500 active:scale-95 transition-transform flex justify-center cursor-pointer'
+              download='qrcode.png'
+              href={qrcodeImage}
+            >
+              Salvar como imagem 🎨
+            </a>
+            <button
+              className='rounded-md border-2 border-blue-500 w-full py-2.5 text-lg font-semibold text-blue-500 active:scale-95 transition-transform'
+              onClick={() => {
+                setQrcodeImage(undefined)
+                setPhoneNumberError(false)
+                form.current?.reset()
+              }}
+            >
+              Limpar tudo 🧹
+            </button>
+          </div>
+        )}
+      </div>
+    </main>
+  )
 }
