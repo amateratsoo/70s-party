@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Bricolage_Grotesque, Inter } from 'next/font/google'
 import './globals.css'
 
+import { NavBar } from '@/components/ui/nav-bar'
+
 export const metadata: Metadata = {
   title: 'Convites'
 }
@@ -29,6 +31,7 @@ export default function RootLayout({
         className={`${inter.variable} ${bricolageGrotesque.variable} antialiased`}
       >
         {children}
+        <NavBar />
       </body>
     </html>
   )

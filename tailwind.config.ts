@@ -7,9 +7,27 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}'
   ],
   theme: {
-    fontFamily: {
-      sans: ['var(--inter)'],
-      serif: ['var(--bricolage-grotesque)']
+    extend: {
+      fontFamily: {
+        sans: ['var(--inter)'],
+        serif: ['var(--bricolage-grotesque)']
+      },
+
+      animation: {
+        'toast-countdown': 'toast-countdown 3s linear forwards'
+      },
+
+      keyframes: {
+        'toast-countdown': {
+          from: {
+            width: '100%'
+          },
+
+          to: {
+            width: '0%'
+          }
+        }
+      }
     }
   },
   plugins: []
