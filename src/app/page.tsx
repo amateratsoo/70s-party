@@ -12,7 +12,7 @@ import { CurlyArrowSvg } from '@/components/svg/curly-arrow-svg'
 import { QrCodeSvg } from '@/components/svg/qr-code-svg'
 import { Toast } from '@/components/ui/toast'
 
-interface ToastMessage {
+export interface ToastMessage {
   title: string
   description: string
   type: 'danger' | 'good'
@@ -244,9 +244,7 @@ export default function Home() {
       <Toast
         open={openToast}
         setOpen={setOpenToast}
-        title={toastMessage.current.title}
-        description={toastMessage.current.description}
-        type={toastMessage.current.type}
+        {...toastMessage.current}
       />
     </main>
   )

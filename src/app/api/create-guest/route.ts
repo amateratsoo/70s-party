@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 import { prisma } from '@/lib/prisma'
+import { createInviteUrl } from '@/utils/create-invite-url'
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData()
@@ -26,10 +27,16 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const inviteURL = createInviteUrl({
+      guestNumber: phoneNumber!,
+      countryCode: countryCode!
+    }).toString()
+
     await prisma.guest.create({
       data: {
         name,
         countryCode,
+        inviteURL,
         phoneNumber: phoneNumber as string
       }
     })

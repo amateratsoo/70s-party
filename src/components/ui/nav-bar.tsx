@@ -17,6 +17,7 @@ export function NavBar() {
         {links.map(({ name, path }) => {
           return (
             <Link
+              key={path}
               className={`rounded-md p-5 py-3 ${
                 pathname == path && 'bg-slate-300'
               }`}
