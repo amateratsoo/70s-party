@@ -2,6 +2,9 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { parseCookies } from 'nookies'
+
+import { useAuth } from '@/app/hooks/use-auth'
 
 const links = [
   { name: 'Código QR', path: '/' },
@@ -12,8 +15,10 @@ const p = ['/', '/guests']
 
 export function NavBar() {
   const pathname = usePathname()
+  const authToken = parseCookies()['auth-token']
+  const isAuthenticated = useAuth(authToken)
 
-  if (!p.includes(pathname)) return null
+  if (!p.includes(pathname) || !isAuthenticated) return null
 
   return (
     <div className='fixed bottom-0 w-full flex items-center justify-center'>
