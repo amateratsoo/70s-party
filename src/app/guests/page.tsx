@@ -71,7 +71,7 @@ export default function Page() {
     ;(async () => {
       setIsLoading(true)
       const response = await fetch(`${baseURL}/api/get-all-guests`, {
-        next: { revalidate: 0 }
+        cache: 'no-store'
       })
       const data = await response.json()
 
