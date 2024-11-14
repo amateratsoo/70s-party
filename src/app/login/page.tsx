@@ -57,7 +57,7 @@ export default function Page() {
           <label htmlFor='password' className='text-xl font-semibold'>
             Palavra-Passe{' '}
             <span className='rounded-md ml-2 bg-slate-300 p-1 text-sm text-slate-500'>
-              Se não souber, fale com o admin
+              dica: fale com o admin 🤫
             </span>
           </label>
           <input
@@ -65,7 +65,7 @@ export default function Page() {
             id='password'
             name='password'
             required
-            placeholder='&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;'
+            placeholder='&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;'
             className='py-2 pl-2 flex-1 bg-slate-100 outline-none rounded-md ring-0 ring-slate-300 focus:ring-1'
           />
         </div>
