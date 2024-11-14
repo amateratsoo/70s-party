@@ -1,12 +1,15 @@
 'use client'
 
-import { type FormEvent, useState, useRef } from 'react'
+import { type FormEvent, useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { Download, Stars } from 'lucide-react'
+import { parseCookies } from 'nookies'
+import { useRouter } from 'next/navigation'
 
 import { baseURL } from '@/constants'
 import { generateQrCode } from '@/utils/generate-qrcode'
 import { createInviteUrl } from '@/utils/create-invite-url'
+import { useAuth } from './hooks/use-auth'
 
 import { CurlyArrowSvg } from '@/components/svg/curly-arrow-svg'
 import { QrCodeSvg } from '@/components/svg/qr-code-svg'
@@ -41,6 +44,8 @@ export default function Home() {
   const [phoneNumberError, setPhoneNumberError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [openToast, setOpenToast] = useState(false)
+
+  const router = useRouter()
 
   const toastMessage = useRef<ToastMessage>({
     title: '',
@@ -128,6 +133,19 @@ export default function Home() {
 
     toastMessage.current = toastMessages.guestAdded
     setOpenToast(true)
+  }
+
+  const authToken = parseCookies()['auth-token']
+  const isAuthenticated = useAuth(authToken)
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return router.push('/login')
+    }
+  }, [])
+
+  if (!isAuthenticated) {
+    return null
   }
 
   return (

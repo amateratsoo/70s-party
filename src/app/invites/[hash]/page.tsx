@@ -39,7 +39,6 @@ export default function Page() {
         if (status >= 400) throw new Error('guest does not exist')
 
         setGuest(data)
-        console.log(data)
       } catch (error) {
         throw error
       }
@@ -55,7 +54,7 @@ export default function Page() {
   }
 
   return (
-    <main className='bg-slate-50 min-h-screen w-screen'>
+    <main className='bg-gradient-to-br to-orange-300 via-blue-500 from-emerald-300 min-h-screen w-screen'>
       <div className='w-full h-full flex justify-center relative'>
         <VirtualTicket className='size-[40rem]' />
 

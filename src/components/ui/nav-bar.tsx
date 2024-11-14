@@ -8,8 +8,12 @@ const links = [
   { name: 'Convidados', path: '/guests' }
 ]
 
+const p = ['/', '/guests']
+
 export function NavBar() {
   const pathname = usePathname()
+
+  if (!p.includes(pathname)) return null
 
   return (
     <div className='fixed bottom-0 w-full flex items-center justify-center'>
