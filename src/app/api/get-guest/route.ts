@@ -16,6 +16,8 @@ export async function POST(request: NextRequest) {
     }
   })
 
+  console.log(guest)
+
   if (!guest) {
     return NextResponse.json({
       status: 400,

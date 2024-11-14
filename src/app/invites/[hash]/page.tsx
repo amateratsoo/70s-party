@@ -18,6 +18,7 @@ export default function Page() {
 
   const [qrCodeImage, setQrCodeImage] = useState<string | undefined>(undefined)
   const [guest, setGuest] = useState<{ name: string } | undefined>(undefined)
+  const [guestDoesNotExist, setGuestDoesNotExist] = useState(false)
   const [firsName, lastName] = guest ? guest.name.split(' ') : []
 
   useEffect(() => {
@@ -36,7 +37,10 @@ export default function Page() {
 
         const { data, status } = await response.json()
 
-        if (status >= 400) throw new Error('guest does not exist')
+        if (status >= 400) {
+          setGuestDoesNotExist(true)
+          return
+        }
 
         setGuest(data)
       } catch (error) {
@@ -44,6 +48,14 @@ export default function Page() {
       }
     })()
   }, [])
+
+  if (guestDoesNotExist) {
+    return (
+      <div className='bg-slate-50 w-screen h-screen flex items-center justify-center text-3xl font-semibold font-sans'>
+        O convidado não existe 😥
+      </div>
+    )
+  }
 
   if (!qrCodeImage || !guest) {
     return (
