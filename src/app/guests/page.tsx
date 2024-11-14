@@ -160,7 +160,7 @@ export default function Page() {
                 <CaseSensitiveIcon className='size-5' />
               </td>
               <td>
-                código postal
+                código de país
                 <Flag className='size-3' />
               </td>
               <td>
@@ -222,7 +222,7 @@ export default function Page() {
               <CaseSensitiveIcon className='size-5' />
             </td>
             <td>
-              código postal
+              código de país
               <Flag className='size-3' />
             </td>
             <td>
