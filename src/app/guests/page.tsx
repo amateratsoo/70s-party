@@ -70,7 +70,9 @@ export default function Page() {
 
     ;(async () => {
       setIsLoading(true)
-      const response = await fetch(`${baseURL}/api/get-all-guests`)
+      const response = await fetch(`${baseURL}/api/get-all-guests`, {
+        cache: 'no-cache'
+      })
       const data = await response.json()
 
       setGuests(data)
