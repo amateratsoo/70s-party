@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import { baseURL } from '@/constants'
 import { generateQrCode } from '@/utils/generate-qrcode'
 import { createInviteUrl } from '@/utils/create-invite-url'
-import { useAuth } from './hooks/use-auth'
+import { useAuth } from '@/hooks/use-auth'
 
 import { CurlyArrowSvg } from '@/components/svg/curly-arrow-svg'
 import { QrCodeSvg } from '@/components/svg/qr-code-svg'

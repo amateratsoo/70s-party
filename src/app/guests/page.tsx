@@ -17,7 +17,7 @@ import { baseURL } from '@/constants'
 import { Popover } from '@/components/ui/popover'
 import { Toast } from '@/components/ui/toast'
 import type { ToastMessage } from '../page'
-import { useAuth } from '../hooks/use-auth'
+import { useAuth } from '@/hooks/use-auth'
 
 interface Guests {
   name: string
@@ -307,41 +307,46 @@ export default function Page() {
                 }
               )
             ) : (
-              filteredGuests.map(({ name, phoneNumber, countryCode }) => {
-                return (
-                  <tr
-                    className='odd:bg-slate-100 border-b border-slate-100 last:border-0'
-                    key={countryCode + phoneNumber}
-                  >
-                    <td className='pl-4'>{name}</td>
-                    <td>{countryCode}</td>
-                    <td>{phoneNumber}</td>
-                    <td>12/12/24</td>
-                    <td className='py-1.5'>
-                      <Popover
-                        content={
-                          <div className='font-sans flex flex-col w-32'>
-                            {/* <span className='font-serif text-base py-1 font-medium'>
+              filteredGuests.map(
+                ({ name, phoneNumber, countryCode, createdAt }) => {
+                  const formatedCreatedAt = new Date(
+                    createdAt
+                  ).toLocaleDateString()
+                  return (
+                    <tr
+                      className='odd:bg-slate-100 border-b border-slate-100 last:border-0'
+                      key={countryCode + phoneNumber}
+                    >
+                      <td className='pl-4'>{name}</td>
+                      <td>{countryCode}</td>
+                      <td>{phoneNumber}</td>
+                      <td>{formatedCreatedAt}</td>
+                      <td className='py-1.5'>
+                        <Popover
+                          content={
+                            <div className='font-sans flex flex-col w-32'>
+                              {/* <span className='font-serif text-base py-1 font-medium'>
                           Opções
                         </span>
                         <div className='w-32 mb-2 h-px bg-slate-300' /> */}
-                            <button className='p-1 hover:bg-slate-300/60 transition-colors text-start rounded-md pr-4'>
-                              Ver convite
-                            </button>
-                            <button className='p-1 pr-4 hover:bg-red-300/60 transition-colors text-red-500 text-start rounded-md'>
-                              Eliminar
-                            </button>
-                          </div>
-                        }
-                      >
-                        <button className='p-1 rounded-md focus:bg-slate-300/45 ring-1 ring-transparent focus:ring-slate-300 outline-none hover:bg-slate-300/45 active:bg-slate-300/45'>
-                          <EllipsisVertical className='size-4' />
-                        </button>
-                      </Popover>
-                    </td>
-                  </tr>
-                )
-              })
+                              <button className='p-1 hover:bg-slate-300/60 transition-colors text-start rounded-md pr-4'>
+                                Ver convite
+                              </button>
+                              <button className='p-1 pr-4 hover:bg-red-300/60 transition-colors text-red-500 text-start rounded-md'>
+                                Eliminar
+                              </button>
+                            </div>
+                          }
+                        >
+                          <button className='p-1 rounded-md focus:bg-slate-300/45 ring-1 ring-transparent focus:ring-slate-300 outline-none hover:bg-slate-300/45 active:bg-slate-300/45'>
+                            <EllipsisVertical className='size-4' />
+                          </button>
+                        </Popover>
+                      </td>
+                    </tr>
+                  )
+                }
+              )
             )}
           </tbody>
         </table>

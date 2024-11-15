@@ -5,7 +5,7 @@ import { parseCookies, setCookie } from 'nookies'
 import { useRouter } from 'next/navigation'
 
 import { createJwt } from '@/utils/create-jwt'
-import { useAuth } from '../hooks/use-auth'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Page() {
   const router = useRouter()

@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { parseCookies } from 'nookies'
 
-import { useAuth } from '@/app/hooks/use-auth'
+import { useAuth } from '@/hooks/use-auth'
 
 const links = [
   { name: 'Código QR', path: '/' },
