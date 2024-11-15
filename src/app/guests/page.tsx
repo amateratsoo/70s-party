@@ -16,6 +16,7 @@ import { baseURL } from '@/constants'
 
 import { Popover } from '@/components/ui/popover'
 import { Toast } from '@/components/ui/toast'
+import { Modal } from '@/components/ui/modal'
 import type { ToastMessage } from '../page'
 import { useAuth } from '@/hooks/use-auth'
 
@@ -49,8 +50,18 @@ export default function Page() {
       phoneNumber.includes(searchGuest)
   )
 
+  const [guestToDeleteInfo, setGuestToDeleteInfo] = useState<{
+    phoneNumber: string
+    countryCode: string
+  }>({
+    phoneNumber: '',
+    countryCode: ''
+  })
+
   const [isLoading, setIsLoading] = useState(true)
   const [openToast, setOpenToast] = useState(false)
+
+  const [openModal, setOpenModal] = useState(false)
 
   const router = useRouter()
 
@@ -129,6 +140,20 @@ export default function Page() {
     }
   }
 
+  function handleDeleteGuest({
+    phoneNumber,
+    countryCode
+  }: {
+    phoneNumber: string
+    countryCode: string
+  }) {
+    setOpenModal(true)
+    setGuestToDeleteInfo({
+      phoneNumber,
+      countryCode
+    })
+  }
+
   if (!isAuthenticated) {
     return null
   }
@@ -197,7 +222,37 @@ export default function Page() {
 
   return (
     <main className='bg-slate-50 w-screen min-h-screen font-sans'>
-      <div className='w-full px-4 max-w-[68rem] mx-auto pt-6'>
+      <Modal
+        open={openModal}
+        onOpenChange={setOpenModal}
+        title='Deseja mesmo remover o convidado?'
+      >
+        <div className='w-full pt-4'>
+          <div className='rounded-md bg-slate-200 p-1 text-sm text-slate-400 w-full'>
+            💡Esta ação é irreversível
+          </div>
+
+          <div className='pt-6 w-full flex'>
+            <button className='flex-1' onClick={() => setOpenModal(false)}>
+              Cancelar
+            </button>
+            <button
+              className='flex-1 bg-red-300/60 text-red-500 py-2 rounded-md'
+              onClick={() => {
+                deleteGuest({
+                  phoneNumber: guestToDeleteInfo.phoneNumber,
+                  countryCode: guestToDeleteInfo.countryCode
+                })
+
+                setOpenModal(false)
+              }}
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </Modal>
+      <div className='w-full scale-95 px-0 sm:scale-100 sm:px-4 max-w-[68rem] mx-auto pt-6 mb-6'>
         <div className='mb-6 px-2 bg-slate-50 rounded-md ring-1 max-w-80 ring-slate-300 overflow-hidden focus-within:ring-black flex items-center'>
           <Search className='size-4 text-slate-500' />
           <input
@@ -265,16 +320,6 @@ export default function Page() {
                         <Popover
                           content={
                             <div className='font-sans flex flex-col w-32'>
-                              {/* <span className='font-serif text-base py-1 font-medium'>
-                            Opções
-                          </span>
-                          <div className='w-32 mb-2 h-px bg-slate-300' /> */}
-                              {/* <button className='p-1 hover:bg-slate-300/60 focus:bg-slate-300/60 outline-none ring-1 ring-transparent focus:ring-slate-300 transition-colors text-start rounded-md pr-4'>
-                                Ver convite
-                              </button>
-                              <button className='p-1 pr-4 hover:bg-red-300/60 focus:bg-red-300/60 ring-1 ring-transparent focus:ring-red-300 outline-none transition-colors text-red-500 text-start rounded-md'>
-                                Eliminar
-                              </button> */}
                               <button
                                 className='p-1 hover:bg-slate-300/60 transition-colors text-start rounded-md pr-4'
                                 onClick={() => {
@@ -286,7 +331,7 @@ export default function Page() {
                               <button
                                 className='p-1 pr-4 hover:bg-red-300/60 transition-colors text-red-500 text-start rounded-md'
                                 onClick={() =>
-                                  deleteGuest({
+                                  handleDeleteGuest({
                                     phoneNumber,
                                     countryCode
                                   })
@@ -308,7 +353,7 @@ export default function Page() {
               )
             ) : (
               filteredGuests.map(
-                ({ name, phoneNumber, countryCode, createdAt }) => {
+                ({ name, phoneNumber, countryCode, createdAt, inviteURL }) => {
                   const formatedCreatedAt = new Date(
                     createdAt
                   ).toLocaleDateString()
@@ -329,10 +374,23 @@ export default function Page() {
                           Opções
                         </span>
                         <div className='w-32 mb-2 h-px bg-slate-300' /> */}
-                              <button className='p-1 hover:bg-slate-300/60 transition-colors text-start rounded-md pr-4'>
+                              <button
+                                className='p-1 hover:bg-slate-300/60 transition-colors text-start rounded-md pr-4'
+                                onClick={() => {
+                                  router.push(inviteURL.toString())
+                                }}
+                              >
                                 Ver convite
                               </button>
-                              <button className='p-1 pr-4 hover:bg-red-300/60 transition-colors text-red-500 text-start rounded-md'>
+                              <button
+                                className='p-1 pr-4 hover:bg-red-300/60 transition-colors text-red-500 text-start rounded-md'
+                                onClick={() =>
+                                  handleDeleteGuest({
+                                    phoneNumber,
+                                    countryCode
+                                  })
+                                }
+                              >
                                 Eliminar
                               </button>
                             </div>
