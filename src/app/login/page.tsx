@@ -56,9 +56,9 @@ export default function Page() {
         <div className='mt-6 gap-4 flex flex-col'>
           <label htmlFor='password' className='text-xl font-semibold'>
             Palavra-Passe{' '}
-            <span className='rounded-md ml-2 bg-slate-300 p-1 text-sm text-slate-500'>
+            {/* <span className='rounded-md ml-2 bg-slate-300 p-1 text-sm text-slate-500'>
               dica: fale com o admin
-            </span>
+            </span> */}
           </label>
           <input
             type='password'
