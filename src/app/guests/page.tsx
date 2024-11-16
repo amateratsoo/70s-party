@@ -346,7 +346,7 @@ export default function Page() {
               {Array.from({ length: 10 }).map((_, index) => {
                 return (
                   <tr
-                    className='odd:bg-slate-100 border-b border-slate-100 last:border-0 animate-pulse'
+                    className='even:bg-slate-100 border-b border-slate-100 last:border-0 animate-pulse'
                     key={index}
                   >
                     <td className='h-9'></td>

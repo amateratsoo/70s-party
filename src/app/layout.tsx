@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${inter.variable} ${bricolageGrotesque.variable} antialiased`}
+        className={`${inter.variable} ${bricolageGrotesque.variable} antialiased bg-slate-50`}
       >
         {children}
         <NavBar />
