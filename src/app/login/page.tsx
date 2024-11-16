@@ -57,7 +57,7 @@ export default function Page() {
           <label htmlFor='password' className='text-xl font-semibold'>
             Palavra-Passe{' '}
             <span className='rounded-md ml-2 bg-slate-300 p-1 text-sm text-slate-500'>
-              dica: fale com o admin 🤫
+              dica: fale com o admin
             </span>
           </label>
           <input
