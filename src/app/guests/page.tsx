@@ -305,7 +305,7 @@ export default function Page() {
     return (
       <main className='bg-slate-50 w-screen h-screen font-sans'>
         <div className='w-full px-4 max-w-[68rem] mx-auto pt-6'>
-          <div className='mb-6 px-2 bg-slate-50 rounded-md ring-1 max-w-80 ring-slate-300 overflow-hidden focus-within:ring-black flex items-center'>
+          <div className='pb-6 px-2 bg-slate-50 rounded-md ring-1 max-w-80 ring-slate-300 overflow-hidden focus-within:ring-black flex items-center'>
             <Search className='size-4 text-slate-500' />
             <input
               type='text'
